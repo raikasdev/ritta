@@ -745,10 +745,21 @@
     "@ritta/sdk" "^1.0.14"
     typescript "^4.3.5"
 
-"@ritta/sdk@^1.0.14", "@ritta/sdk@^1.0.20":
+"@ritta/sdk@^1.0.14":
   version "1.0.20"
   resolved "https://registry.yarnpkg.com/@ritta/sdk/-/sdk-1.0.20.tgz#e900b7959498f874ee4b150ec887148d0262d07c"
   integrity sha512-C27U/N5CYbJFkoTAp32b3O/Ql+u+fhe1TW7hnF9+O0LOZyC7mo5Czesas+iBstkT2Kftwg9qWdzVmQbdTbubjg==
+  dependencies:
+    "@types/pino" "^6.3.11"
+    fastify "^3.19.2"
+    mongoose "^5.13.3"
+    pino "^6.13.0"
+    tar "^6.1.2"
+
+"@ritta/sdk@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@ritta/sdk/-/sdk-1.1.0.tgz#3ccad12b84b68415d444940f513bfa72cf5d84e0"
+  integrity sha512-Boif8V+me4iWSTE2YAPLaaBiSSk6fgh6iDquU8jERzIyl4D6Br2t+95KNdkxj303s8lvDsACn0eBan+tj/cljQ==
   dependencies:
     "@types/pino" "^6.3.11"
     fastify "^3.19.2"
@@ -2003,7 +2014,7 @@ dot-prop@^5.1.0:
 
 dotenv@^10.0.0:
   version "10.0.0"
-  resolved "https://registry.npmjs.org/dotenv/-/dotenv-10.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
 
 ecc-jsbn@~0.1.1:

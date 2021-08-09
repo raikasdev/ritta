@@ -4,11 +4,12 @@ import pino from 'pino';
 import ModuleNoPermission from '../errors/ModuleNoPermission';
 
 import Ritta from '@ritta/sdk/dist/ritta';
-import { RittaAuth } from '@ritta/sdk/dist/auth';
+import { RittaAuth, Strategy } from '@ritta/sdk/dist/auth';
 import { Document, Model, RittaDatabase } from '@ritta/sdk/dist/database';
 import { RittaRoles, Role, RolePermissions } from '@ritta/sdk/dist/roles';
 import { RittaModules } from '@ritta/sdk/dist/modules';
 import { Schema } from 'mongoose';
+import { FastifyRequest } from 'fastify';
 
 export default (): Promise<any> =>
   new Promise((resolve) => {
@@ -23,7 +24,10 @@ export default (): Promise<any> =>
         const modulesSet = new Set(list); // Remove duplicates
         await Promise.all(
           Array.from(modulesSet).map(async (moduleName) => {
-            const Module = await import(moduleName);
+            const Module = (await import(moduleName)).default;
+            if (!Module) {
+              throw new Error(`${moduleName}: module not found!`);
+            }
             fs.readFile(
               `node_modules/${moduleName}/package.json`,
               async (err, data) => {
@@ -40,14 +44,18 @@ export default (): Promise<any> =>
                     `${moduleName}: package.json is missing ritta !`
                   );
                 }
-                new Module(
-                  new RittaSdk(
-                    meta.ritta.permissions,
-                    meta.ritta.userPermissions,
-                    meta.ritta.dependencies,
-                    meta.ritta.softDependencies
-                  )
-                );
+                try {
+                  new Module(
+                    new RittaSdk(
+                      meta.ritta.permissions,
+                      meta.ritta.userPermissions,
+                      meta.ritta.dependencies,
+                      meta.ritta.softDependencies
+                    )
+                  );
+                } catch (e) {
+                  throw new Error(`${moduleName}: ${e.message}`);
+                }
                 resolve(true);
               }
             );
@@ -86,6 +94,7 @@ class RittaSdk extends Ritta {
     this._modules = new RittaSdkModules(this.permissions);
     this._roles = new RittaSdkRoles(this.permissions);
     this._database = new RittaSdkDatabase(this.permissions);
+    this._auth = new RittaSdkAuth(this.permissions);
   }
 
   database(): RittaDatabase {
@@ -109,6 +118,46 @@ class RittaSdk extends Ritta {
   }
 }
 
+class RittaSdkAuth extends RittaAuth {
+  private permissions: Set<string>;
+  constructor(permissions: Set<string>) {
+    super();
+    this.permissions = permissions;
+  }
+
+  async list(): Promise<Strategy[]> {
+    return [];
+  }
+
+  async register(strategy: Strategy): Promise<Strategy | null> {
+    return null;
+  }
+}
+
+class RittaSdkStrategy extends Strategy {
+  public name: string;
+  public image: string;
+  public showInLogin: boolean;
+  public bypassMFA: boolean;
+
+  authStart(): void {
+    return;
+  }
+
+  onCallback(): void {
+    return;
+  }
+
+  constructor(name, image, showInLogin, bypassMFA, onStart, onCallback) {
+    super();
+    this.name = name;
+    this.image = image;
+    this.showInLogin = showInLogin;
+    this.bypassMFA = bypassMFA;
+    this.authStart = onStart;
+    this.onCallback = onCallback;
+  }
+}
 class RittaSdkDatabase extends RittaDatabase {
   private permissions: Set<string>;
   constructor(permissions: Set<string>) {
