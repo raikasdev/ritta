@@ -1,5 +1,5 @@
 import argon2 from 'argon2';
-import { UserModel, AccountModel, TeacherModel, StudentModel } from '../models';
+import { UserModel, AccountModel } from '../models';
 import { decrypt, encrypt, validateAuthJWT } from '../utils';
 
 export default class UserService {
@@ -75,7 +75,7 @@ export default class UserService {
           id: accountId,
           firstName: accountInfo.firstName,
           lastName: accountInfo.lastName,
-          userType: accountInfo.userType,
+          role: accountInfo.role,
         };
       })
     );
@@ -96,41 +96,7 @@ export default class UserService {
     return {
       firstName: userRecord.firstName,
       lastName: userRecord.lastName,
-      userType: userRecord.userType,
-    };
-  }
-
-  public static async createTeacher(
-    firstName: string,
-    lastName: string,
-    titles?: string[]
-  ): Promise<any> {
-    const userRecord = await TeacherModel.create({
-      firstName,
-      lastName,
-      titles,
-    });
-    return {
-      // MAKE SURE TO NEVER SEND BACK THE PASSWORD!!!!
-      firstName: userRecord.firstName,
-      lastName: userRecord.lastName,
-      titles: userRecord.titles,
-      abbrevation: userRecord.abbrevation,
-    };
-  }
-
-  public static async createStudent(
-    firstName: string,
-    lastName: string
-  ): Promise<any> {
-    const userRecord = await StudentModel.create({
-      firstName,
-      lastName,
-    });
-
-    return {
-      firstName: userRecord.firstName,
-      lastName: userRecord.lastName,
+      role: userRecord.role,
     };
   }
 }
