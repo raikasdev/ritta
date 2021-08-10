@@ -144,18 +144,18 @@ class RittaSdkStrategy extends Strategy {
     return;
   }
 
-  onCallback(): void {
+  callback(): void {
     return;
   }
 
-  constructor(name, image, showInLogin, bypassMFA, onStart, onCallback) {
+  constructor(name, image, showInLogin, bypassMFA, onStart, callback) {
     super();
     this.name = name;
     this.image = image;
     this.showInLogin = showInLogin;
     this.bypassMFA = bypassMFA;
     this.authStart = onStart;
-    this.onCallback = onCallback;
+    this.callback = callback;
   }
 }
 class RittaSdkDatabase extends RittaDatabase {
