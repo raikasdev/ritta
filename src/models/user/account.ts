@@ -1,18 +1,16 @@
-// Contains an account (student, parent, staff). One user can have multiple of these.
-// If user type is "student" or "parent" field "student" has to be set (contains models/student)
-// If user type if "parent" field "parent" has to be set (contains models/parent)
-// If user type is "teacher" field "teacher" has to be set (contains models/teacher)
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 interface Account extends mongoose.Document {
   firstName: string;
   lastName: string;
-  userType: number;
-  student?: string;
-  teacher?: string;
-  parent?: string;
-  school?: string;
+  role: number;
+  store: {
+    [key: string]: any;
+  };
+  roleStore: {
+    [key: string]: any;
+  };
 }
 
 const account = new mongoose.Schema<Account>({
@@ -24,25 +22,19 @@ const account = new mongoose.Schema<Account>({
     type: String,
     required: true,
   },
-  userType: {
+  role: {
     type: Number,
     default: 0,
   },
-  student: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Student',
+  store: {
+    // Modules can write data to their own store section (for storing account specific data)
+    type: Object,
+    default: {},
   },
-  teacher: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Teacher',
-  },
-  parent: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Parent',
-  },
-  school: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'School',
+  roleStore: {
+    // Modules can write data to their own store section (for storing role specific data). This gets wiped if user role changes
+    type: Object,
+    default: {},
   },
 });
 

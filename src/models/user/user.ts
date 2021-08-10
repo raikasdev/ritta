@@ -10,13 +10,15 @@ interface User extends mongoose.Document {
   created: number;
   secret?: string;
   mfaBackup?: string;
-  puavoId?: number;
   firstName: string;
   lastName: string;
   accounts: string[];
   latestLogin: number;
   lastestPasswordChange: number;
   passwordChangeRequired: boolean;
+  store: {
+    [key: string]: any;
+  };
 }
 
 const user = new mongoose.Schema<User>({
@@ -26,7 +28,7 @@ const user = new mongoose.Schema<User>({
     unique: true,
   },
   password: {
-    type: String,
+    type: String, // Hash
     required: true,
   },
   created: {
@@ -38,9 +40,6 @@ const user = new mongoose.Schema<User>({
   },
   mfaBackup: {
     type: String,
-  },
-  puavoId: {
-    type: Number,
   },
   firstName: {
     type: String,
@@ -70,6 +69,11 @@ const user = new mongoose.Schema<User>({
   passwordChangeRequired: {
     type: Boolean,
     default: true,
+  },
+  store: {
+    // Modules can write their own store section (e.g. for storing auth identifiers).
+    type: Object,
+    default: {},
   },
 });
 

@@ -9,7 +9,6 @@ import { Document, Model, RittaDatabase } from '@ritta/sdk/dist/database';
 import { RittaRoles, Role, RolePermissions } from '@ritta/sdk/dist/roles';
 import { RittaModules } from '@ritta/sdk/dist/modules';
 import { Schema } from 'mongoose';
-import { FastifyRequest } from 'fastify';
 
 export default (): Promise<any> =>
   new Promise((resolve) => {
@@ -70,6 +69,7 @@ export default (): Promise<any> =>
   });
 
 class RittaSdk extends Ritta {
+  // TODO: Permission checks and methods need to be implemented
   private permissions: Set<string>;
   private userPermissions: Set<string>;
   private dependencies: Set<string>;
