@@ -22,7 +22,7 @@ export default async ({
   await app.register(helmet);
   await app.register(rateLimit, {
     global: false,
-    max: 3,
+    max: 5,
     timeWindow: '1 minute',
   });
   // Return the fastify app
