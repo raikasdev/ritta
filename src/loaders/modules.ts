@@ -9,6 +9,7 @@ import { Document, Model, RittaDatabase } from '@ritta/sdk/dist/database';
 import { RittaRoles, Role, RolePermissions } from '@ritta/sdk/dist/roles';
 import { RittaModules } from '@ritta/sdk/dist/modules';
 import { Schema } from 'mongoose';
+import { ModuleStore, StrategyStore } from '../store';
 
 export default (): Promise<any> =>
   new Promise((resolve) => {
@@ -55,6 +56,9 @@ export default (): Promise<any> =>
                 } catch (e) {
                   throw new Error(`${moduleName}: ${e.message}`);
                 }
+                const modules = ModuleStore.get();
+                modules.add(Module);
+                ModuleStore.set(modules);
                 resolve(true);
               }
             );
@@ -126,38 +130,26 @@ class RittaSdkAuth extends RittaAuth {
   }
 
   async list(): Promise<Strategy[]> {
-    return [];
+    return Array.from(StrategyStore.get());
   }
 
   async register(strategy: Strategy): Promise<Strategy | null> {
-    return null;
+    if (!this.permissions.has('auth:register')) {
+      throw new ModuleNoPermission('auth.register() requires auth:register');
+    }
+    const strategies = StrategyStore.get();
+    if (strategy.name.toLowerCase() !== strategy.name) {
+      throw new Error('Strategy name must be lowercase');
+    }
+    if (strategy.name in strategies) {
+      throw new Error(`Strategy ${strategy.name} already exists`);
+    }
+    strategies.add(strategy);
+    StrategyStore.set(strategies);
+    return strategy;
   }
 }
 
-class RittaSdkStrategy extends Strategy {
-  public name: string;
-  public image: string;
-  public showInLogin: boolean;
-  public bypassMFA: boolean;
-
-  authStart(): void {
-    return;
-  }
-
-  callback(): void {
-    return;
-  }
-
-  constructor(name, image, showInLogin, bypassMFA, onStart, callback) {
-    super();
-    this.name = name;
-    this.image = image;
-    this.showInLogin = showInLogin;
-    this.bypassMFA = bypassMFA;
-    this.authStart = onStart;
-    this.callback = callback;
-  }
-}
 class RittaSdkDatabase extends RittaDatabase {
   private permissions: Set<string>;
   constructor(permissions: Set<string>) {
@@ -167,7 +159,7 @@ class RittaSdkDatabase extends RittaDatabase {
 
   async model(name: string): Promise<RittaSdkModel> {
     if (!this.permissions.has('database:read')) {
-      throw new ModuleNoPermission('datbase.model() requires database:read');
+      throw new ModuleNoPermission('database.model() requires database:read');
     }
     return null;
   }

@@ -756,10 +756,10 @@
     pino "^6.13.0"
     tar "^6.1.2"
 
-"@ritta/sdk@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@ritta/sdk/-/sdk-1.1.0.tgz#3ccad12b84b68415d444940f513bfa72cf5d84e0"
-  integrity sha512-Boif8V+me4iWSTE2YAPLaaBiSSk6fgh6iDquU8jERzIyl4D6Br2t+95KNdkxj303s8lvDsACn0eBan+tj/cljQ==
+"@ritta/sdk@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@ritta/sdk/-/sdk-1.2.1.tgz#bdba65385e2bc1cefe9cbf39b8d1db66d926b4b9"
+  integrity sha512-eUzAfuA6f5vXtUv6QielCof/fjE87CaQ56Bu9dvDaiV2P6vvvFoduVPK9oI9oaVyhO10lHo2TVkJCYVGe7e1ow==
   dependencies:
     "@types/pino" "^6.3.11"
     fastify "^3.19.2"

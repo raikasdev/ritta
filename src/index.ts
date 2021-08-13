@@ -16,7 +16,7 @@ app.all('/', {}, (_, res) => {
   res.redirect(config.frontUrl);
 });
 
-app.setNotFoundHandler((request, reply) => {
+app.setNotFoundHandler((_, reply) => {
   reply.code(404).send({ message: 'Not found' });
 });
 
